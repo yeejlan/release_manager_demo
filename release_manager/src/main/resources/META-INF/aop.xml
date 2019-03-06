@@ -1,0 +1,8 @@
+<aspectj>
+	<weaver options="-Xset:weaveJavaxPackages=true" />
+	<aspects>
+		<aspect name="release_manager.aop.AutoWeaveHandle" />
+		<aspect name="tiny.aop.CacheHandle" />
+		<aspect name="tiny.aop.ProfilingHandle" />
+	</aspects>
+</aspectj>

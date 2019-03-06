@@ -1,0 +1,146 @@
+
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'application'
+apply plugin: 'kotlin'
+apply plugin: 'kotlin-kapt'
+
+configurations {
+	ajc
+	ajweaver
+}
+
+dependencies { 
+	compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+	compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.13'
+	compile group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.4.14.v20181114'
+	compile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '9.4.14.v20181114'
+	compile group: 'org.eclipse.jetty', name: 'jetty-annotations', version: '9.4.14.v20181114'
+	compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '3.12.0'
+	compile group: 'com.squareup.okhttp3', name: 'logging-interceptor', version: '3.12.0'
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
+	compile group: 'commons-io', name: 'commons-io', version: '2.6'
+	compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
+	compile group: 'com.google.dagger', name: 'dagger', version: '2.20'
+	kapt group: 'com.google.dagger', name: 'dagger-compiler', version: '2.20'
+	compile project(":tiny-annotation")
+	compile project(":tiny-compiler")
+	kapt project(":tiny-compiler")
+	compile project(":tiny")
+	compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+	compile("org.jetbrains.kotlin:kotlin-reflect")
+	compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-kotlin', version: '2.9.8'
+	compile group: 'org.codehaus.groovy', name: 'groovy-templates', version: '2.5.5'
+	compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+	compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+	compile group: 'io.lettuce', name: 'lettuce-core', version: '5.1.3.RELEASE'
+	compile group: 'org.apache.commons', name: 'commons-pool2', version: '2.6.0'
+	compile group: 'com.zaxxer', name: 'HikariCP', version: '2.7.9'
+	testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.3.2'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.1.0'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.1.0'
+	compile 'org.aspectj:aspectjtools:1.9.2'
+	ajc 'org.aspectj:aspectjtools:1.9.2'
+	ajc 'org.aspectj:aspectjrt:1.9.2'
+	ajweaver 'org.aspectj:aspectjweaver:1.9.2'
+}
+
+compileKotlin {
+	kotlinOptions {
+		freeCompilerArgs = ["-Xjsr305=strict"]
+		jvmTarget = "1.8"
+	}
+}
+compileTestKotlin {
+	kotlinOptions {
+		freeCompilerArgs = ["-Xjsr305=strict"]
+		jvmTarget = "1.8"
+	}
+}
+
+tasks.withType(JavaCompile) { 
+	options.encoding = "UTF-8"
+	options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+}
+
+test {
+	useJUnitPlatform()
+	failFast = true
+	testLogging {
+		showStandardStreams = true
+	}
+}
+
+compileJava {
+	sourceCompatibility="1.8"
+	targetCompatibility="1.8"
+}
+
+apply from: 'jetty.gradle'
+
+task "as"(dependsOn: assemble)
+task "c"(dependsOn: classes)
+
+def enableWeave = false
+
+task weave {
+
+	if(enableWeave) {
+		println "Aspectj class weave is enabled"
+	}else{
+		return
+	}
+
+	def compileJava = project.tasks.getByName("compileJava")
+	def compileKotlin = project.tasks.getByName("compileKotlin")
+
+	project.afterEvaluate {
+		weave.dependsOn compileKotlin, compileJava
+		def classesTask = project.tasks.getByName("classes")
+		classesTask.dependsOn weave
+	}
+
+	doLast {
+		ant.taskdef(resource:"org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties", classpath: configurations.ajc.asPath)
+		ant.iajc(source:"1.8", 
+				target:"1.8", 
+				showWeaveInfo:false,
+				inpath: "$compileKotlin.destinationDir",
+				destDir: "$compileKotlin.destinationDir",
+				classpath: "${configurations.compile.asPath};${configurations.ajc.asPath};../tiny/build/classes/kotlin/main;../tiny-annotation/build/classes/kotlin/main",
+				maxmem:"512m", 
+				fork:"true",
+				//aspectPath:"",
+			){}
+	}
+}
+
+def runWithWeaver = true
+def runWithHotSwap = false
+def tinyAppEnv = "development"
+
+run {
+
+	doFirst {
+		if(runWithWeaver) {
+			def weaver = configurations.ajweaver.asPath
+			jvmArgs = jvmArgs << "-javaagent:$weaver"
+		}
+		if(runWithHotSwap){
+			jvmArgs = jvmArgs << "-XXaltjvm=dcevm"
+			jvmArgs = jvmArgs << "-javaagent:c:/tools/hotswap-agent.jar"
+		}
+		jvmArgs = jvmArgs << "-Dtiny.app.env=$tinyAppEnv"
+	}
+}
+
+
+//applicationDefaultJvmArgs = ["-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"]
+
+mainClassName = "release_manager.ReleaseManagerKt"
+
+jar {
+	manifest {
+		attributes 'Main-Class': 'release_manager.ReleaseManagerKt'
+	}
+}

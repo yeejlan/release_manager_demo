@@ -1,0 +1,31 @@
+package release_manager.controller
+
+import tiny.annotation.Controller
+import release_manager.library.Utils
+import release_manager.model.*
+import tiny.*
+import tiny.lib.*
+private val logModel = LogModel()
+
+@Controller
+class TestController : BaseController() {
+
+	fun md5Action(): Any {
+		return Utils.md5("12345你好")
+	}
+
+	fun aAction(): Any {
+		val result = logModel.list(null,null)
+		if(result.error()){
+			println("err: " + result.cause)
+		}else{
+			println("data: ")
+			DebugUtil.inspect(result.data())
+			val oneLog = result.data()[0]
+			DebugUtil.inspect(oneLog.map)
+		}
+		val result2 = logModel.getTotalCount(null,null)
+		println(result2.data())
+		return result.toString() + " | " + result2.data().toString()
+	}
+}
