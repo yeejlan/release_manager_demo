@@ -28,36 +28,36 @@ class ActionLogDao {
 		return TinyResult(result)
 	}
 
-	fun list(dateFilter: Date?, NameFilter: String?, offset: Long, pageSize: Int): TinyResult<List<ActionLog>> {
+	fun list(dateFilter: Date?, nameFilter: String?, offset: Long, pageSize: Long): TinyResult<List<ActionLog>> {
 		var optionSQL = " where 1"
 		if(dateFilter != null) {
 			optionSQL += " and  log_date = :log_date "
 		}
-		if(NameFilter != null) {
+		if(nameFilter != null) {
 			optionSQL += " and  username like :username "
 		}
 
-		val p = hashMapOf(
+		val p = hashMapOf<String, Any>(
 				"offset" to offset,
 				"pageSize" to pageSize
 			)
 		if(dateFilter != null) {
 			p["log_date"] = dateFilter
 		}
-		if(NameFilter != null) {
-			p["username"] = NameFilter
+		if(nameFilter != null) {
+			p["username"] = nameFilter
 		}
 
 		val result = db.queryForList("select * from action_log $optionSQL order by id desc limit :offset , :pageSize", p)
 		return TinyResult.fromList(result, ActionLog::class)
 	}
 
-	fun getTotalCount(dateFilter: Date?, NameFilter: String?): TinyResult<Long> {
+	fun getTotalCount(dateFilter: Date?, nameFilter: String?): TinyResult<Long> {
 		var optionSQL = " where 1"
 		if(dateFilter != null) {
 			optionSQL += " and  log_date = :log_date "
 		}
-		if(NameFilter != null) {
+		if(nameFilter != null) {
 			optionSQL += " and  username like :username "
 		}
 
@@ -65,8 +65,8 @@ class ActionLogDao {
 		if(dateFilter != null) {
 			p["log_date"] = dateFilter
 		}
-		if(NameFilter != null) {
-			p["username"] = NameFilter
+		if(nameFilter != null) {
+			p["username"] = nameFilter
 		}
 		val result = db.queryForMap("select count(*) as cnt from action_log $optionSQL", p)
 		if(result.ex != null) {

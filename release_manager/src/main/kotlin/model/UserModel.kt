@@ -25,6 +25,7 @@ class UserModel {
 		return User(hashMapOf())
 	}
 
+	/*call this function when a page need user auth*/
 	fun hasLoggedin(loginPageRedirect: Boolean = false): Boolean {
 		if(currentUserId() > 0) {
 			return true
@@ -36,6 +37,7 @@ class UserModel {
 		return false
 	}
 
+	/*call this function when a page need admin privilege*/
 	fun isAdmin(pageRedirect: Boolean = true): Boolean {
 		if(currentRole() == "admin") {
 			return true
@@ -47,6 +49,7 @@ class UserModel {
 		return false
 	}
 
+	/*user login*/
 	fun login(username: String, password: String): TinyResult<Boolean> {
 		if(username == "" || password == "") {
 			return TinyResult("bad param", false)
@@ -75,6 +78,7 @@ class UserModel {
 		return TinyResult("login failed", false)
 	}
 
+	/*only for demo purpose, should be verifyPassword(userid: Long, password: String)*/
 	fun verifyPassword(password: String): TinyResult<Boolean> {
 		val session = TinyRouter.ctx().session
 		val userid = session["uid"] as Long
@@ -95,6 +99,7 @@ class UserModel {
 		return TinyResult(null, false)
 	}
 
+	/*only for demo purpose, should be changePassword(userid: Long, password: String)*/
 	fun changePassword(password: String): TinyResult<Boolean> {
 		val session = TinyRouter.ctx().session
 		val userid = session["uid"] as Long

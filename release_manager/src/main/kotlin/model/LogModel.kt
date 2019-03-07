@@ -13,11 +13,11 @@ class LogModel {
 		return actionLogDao.add(userid, username, action_name, return_message)
 	}
 
-	fun list(dateFilter: Date?, NameFilter: String?, offset: Long = 0, pageSize: Int = 10): TinyResult<List<ActionLog>> {
-		return actionLogDao.list(dateFilter, NameFilter, offset, pageSize)
+	fun list(dateFilter: Date?, nameFilter: String?, offset: Long = 0, pageSize: Long = 10): TinyResult<List<ActionLog>> {
+		return actionLogDao.list(dateFilter, nameFilter, offset, pageSize)
 	}
 
-	fun getTotalCount(dateFilter: Date?, NameFilter: String?): TinyResult<Long>{
-		return actionLogDao.getTotalCount(dateFilter, NameFilter)
+	fun getTotalCount(dateFilter: Date?, nameFilter: String?): TinyResult<Long>{
+		return actionLogDao.getTotalCount(dateFilter, nameFilter)
 	}
 }
