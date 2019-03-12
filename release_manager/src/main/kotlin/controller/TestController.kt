@@ -5,13 +5,16 @@ import release_manager.library.Utils
 import release_manager.model.*
 import tiny.*
 import tiny.lib.*
+
+
 private val logModel = LogModel()
+private val userModel = UserModel()
 
 @Controller
 class TestController : BaseController() {
 
 	fun md5Action(): Any {
-		return Utils.md5("12345你好")
+		return userModel.getPasswordMd5("pass13579")
 	}
 
 	fun aAction(): Any {

@@ -28,6 +28,8 @@ class LogController : BaseController() {
 		val date = ctx.params["date"]
 		var baseUrl = "/log/"
 		
+		view["username"] = ""
+		view["date"] = ""
 		if(username != "" || date != "") {
 			view["username"] = username
 			view["date"] = date
@@ -42,13 +44,14 @@ class LogController : BaseController() {
 		var dateFilter: Date? = null
 		var nameFilter: String? = null
 		if(date != "") {
-			val sdf = SimpleDateFormat("yyyy-MM-dd")
+			val sdf = SimpleDateFormat("MM/dd/yyyy")
 			try{
 				dateFilter = sdf.parse(date)
 			}catch(e: Throwable) {
 				//pass
 			}
 		}
+
 		if(username != "") {
 			nameFilter = username
 		}
@@ -61,7 +64,7 @@ class LogController : BaseController() {
 				logModel.getTotalCount(dateFilter, nameFilter)
 			}).subscribeOn(Schedulers.io())
 
-		val mergeResult = BiFunction<TinyResult<List<ActionLog>>, TinyResult<Long>, Unit> {
+		val mergeResult = BiFunction<TinyResult<List<ActionLog>>, TinyResult<Long>, Map<String, Any>> {
 			trLogList, trLogTotal ->
 			if(trLogList.error()) {
 				throw LogControllerException("logList error: " + trLogList.cause())
@@ -69,15 +72,21 @@ class LogController : BaseController() {
 			if(trLogTotal.error()) {
 				throw LogControllerException("logTotal error: " + trLogTotal.cause())
 			}
-			val total = trLogTotal.data()
-			val pageStr = Paging.page(total, baseUrl, page, pageSize)
-			view["pageStr"] = pageStr
-			view["logList"] = trLogList.data()
+			
+			return@BiFunction mapOf(
+					"total" to trLogTotal.data(),
+					"list" to trLogList.data()
+				)
 		}
 
-		Single.zip(logListSingle, logTotalSingle, mergeResult)
+		val merged = Single.zip(logListSingle, logTotalSingle, mergeResult)
 			.blockingGet()
-		return ""
+
+		view["logList"] = merged["list"] as Any
+		val pageStr = Paging.page(merged["total"] as Long, baseUrl, page, pageSize)
+		view["pageStr"] = pageStr
+
+		return view.render("log/index")
 	}
 }
 

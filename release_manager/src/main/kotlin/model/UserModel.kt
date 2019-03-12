@@ -52,7 +52,7 @@ class UserModel {
 	/*user login*/
 	fun login(username: String, password: String): TinyResult<Boolean> {
 		if(username == "" || password == "") {
-			return TinyResult("bad param", false)
+			return TinyResult(null, false)
 		}
 
 		val result = userDao.getUserByName(username)
@@ -61,7 +61,10 @@ class UserModel {
 			return TinyResult("internal error", result.cause())
 		}
 		val user = result.data()
-		val passwordMd5 = _getPasswordMd5(username, password)
+		if(user == null) {
+			return TinyResult(null, false)
+		}
+		val passwordMd5 = getPasswordMd5(password)
 		if(user.password == passwordMd5) { //login success
 			val session = TinyRouter.ctx().session
 			session["uid"] = user.id
@@ -75,7 +78,7 @@ class UserModel {
 
 		logModel.add(-1, user.username, "login", "Failed")
 
-		return TinyResult("login failed", false)
+		return TinyResult(null, false)
 	}
 
 	/*only for demo purpose, should be verifyPassword(userid: Long, password: String)*/
@@ -92,7 +95,10 @@ class UserModel {
 			return TinyResult("getUserByName error", false)
 		}
 		val user = result.data()
-		val passwordMd5 = _getPasswordMd5(username, password)
+		if(user == null) {
+			return TinyResult(null, false)
+		}
+		val passwordMd5 = getPasswordMd5(password)
 		if(user.password == passwordMd5) {
 			return TinyResult(null, true)
 		}
@@ -107,15 +113,15 @@ class UserModel {
 		if(userid < 1 || password == "") {
 			return TinyResult("bad param", false)
 		}
-
-		val result = userDao.updatePassword(userid, password)
+		val passwordMd5 = getPasswordMd5(password)
+		val result = userDao.updatePassword(userid, passwordMd5)
 		if(result.error()) {
 			return TinyResult("updatePassword failed", false)
 		}
 		return TinyResult(null, true)
 	}
 
-	private fun _getPasswordMd5(username: String, password: String): String{
-		return Utils.md5(username + password + sitePhrase)
+	public fun getPasswordMd5(password: String): String{
+		return Utils.md5(password + sitePhrase)
 	}
 }

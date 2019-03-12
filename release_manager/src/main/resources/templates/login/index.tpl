@@ -6,7 +6,7 @@
 		<div class="alert alert-block fade in">
 			<button type="button" class="close" data-dismiss="alert">×</button>
 			<h4>Error</h4> 
-			<p><%errStr%></p>
+			<p><%=errStr%></p>
 		</div>
 	<%}%>
 	<div class="hero-unit">

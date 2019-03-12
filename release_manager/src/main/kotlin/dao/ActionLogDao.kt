@@ -5,8 +5,10 @@ import tiny.lib.*
 import release_manager.domain.*
 import java.util.Date
 import release_manager.library.Utils
+import java.text.SimpleDateFormat
 
 private val db = TinyRegistry["db.release_manager"] as TinyJdbc
+private val sdf = SimpleDateFormat("yyyy-MM-dd")
 
 class ActionLogDao {
 
@@ -42,7 +44,7 @@ class ActionLogDao {
 				"pageSize" to pageSize
 			)
 		if(dateFilter != null) {
-			p["log_date"] = dateFilter
+			p["log_date"] = sdf.format(dateFilter)
 		}
 		if(nameFilter != null) {
 			p["username"] = nameFilter
@@ -63,7 +65,7 @@ class ActionLogDao {
 
 		val p: HashMap<String, Any> = hashMapOf()
 		if(dateFilter != null) {
-			p["log_date"] = dateFilter
+			p["log_date"] = sdf.format(dateFilter)
 		}
 		if(nameFilter != null) {
 			p["username"] = nameFilter

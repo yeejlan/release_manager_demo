@@ -4,11 +4,11 @@ import tiny.*
 import tiny.lib.*
 import release_manager.domain.*
 
-private val db = TinyRegistry["release_manager"] as TinyJdbc
+private val db = TinyRegistry["db.release_manager"] as TinyJdbc
 
 class UserDao {
 
-	fun getUserByName(username: String): TinyResult<User> {
+	fun getUserByName(username: String): TinyResult<User?> {
 		if(username == "") {
 			return TinyResult("username is empty", null as User?)
 		}
@@ -21,7 +21,7 @@ class UserDao {
 		return TinyResult.fromMap(result, User::class)
 	}
 
-	fun getUserById(userid: Long): TinyResult<User> {
+	fun getUserById(userid: Long): TinyResult<User?> {
 		if(userid < 1) {
 			return TinyResult("userid is invalid", null as User?)
 		}
