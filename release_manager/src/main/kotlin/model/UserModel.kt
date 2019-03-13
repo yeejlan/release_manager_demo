@@ -21,8 +21,9 @@ class UserModel {
 		return role as String
 	}
 
-	fun currentUserInfo(): User {
-		return User(hashMapOf())
+	fun currentUserInfo(): TinyResult<User?> {
+		val userid = currentUserId()
+		return getUserById(userid)
 	}
 
 	/*call this function when a page need user auth*/
@@ -47,6 +48,10 @@ class UserModel {
 			TinyRouter.exit()
 		}
 		return false
+	}
+
+	fun getUserById(userid: Long): TinyResult<User?> {
+		return userDao.getUserById(userid)
 	}
 
 	/*user login*/

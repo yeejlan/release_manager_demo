@@ -66,13 +66,10 @@ class LogController : BaseController() {
 
 		val mergeResult = BiFunction<TinyResult<List<ActionLog>>, TinyResult<Long>, Map<String, Any>> {
 			trLogList, trLogTotal ->
-			if(trLogList.error()) {
-				throw LogControllerException("logList error: " + trLogList.cause())
-			}
-			if(trLogTotal.error()) {
-				throw LogControllerException("logTotal error: " + trLogTotal.cause())
-			}
-			
+
+			trLogList.mayThrow("logList error")
+			trLogTotal.mayThrow("logTotal error")
+
 			return@BiFunction mapOf(
 					"total" to trLogTotal.data(),
 					"list" to trLogList.data()
@@ -82,12 +79,10 @@ class LogController : BaseController() {
 		val merged = Single.zip(logListSingle, logTotalSingle, mergeResult)
 			.blockingGet()
 
-		view["logList"] = merged["list"] as Any
+		view["logList"] = merged["list"]
 		val pageStr = Paging.page(merged["total"] as Long, baseUrl, page, pageSize)
 		view["pageStr"] = pageStr
 
 		return view.render("log/index")
 	}
 }
-
-private class LogControllerException(message: String?) : Throwable(message)

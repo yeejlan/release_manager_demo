@@ -9,12 +9,11 @@
 			<a class="brand" href="/">Release Manager</a>
 			<div class="nav-collapse">
 				<ul class="nav">
-					<li <%print currController == 'index' ? 'class="active"': '' %>><a href="/">Release</a></li>
-					<li <%print currController == 'log' ? 'class="active"': '' %>><a href="/log">Logs</a></li>
-					<li <%print currController == 'clearcache' ? 'class="active"': '' %>><a href="/clearcache">Clear Cache</a></li>
-                    <li class="divider-vertical"></li>
+					<li <%= currController == 'index' ? 'class="active"': '' %>><a href="/">Release</a></li>
+					<li <%= currController == 'log' ? 'class="active"': '' %>><a href="/log">Logs</a></li>
+                    <!--<li class="divider-vertical"></li>-->
 					<%if(session['role'] == 'admin'){%>
-					<li class="dropdown <%print currController == 'siteconfig' ? 'class="active"': '' %>">
+					<li class="dropdown <%= currController == 'siteconfig' ? 'class="active"': '' %>">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Config 
                         <b class="caret"></b></a>
                         <ul class="dropdown-menu">
