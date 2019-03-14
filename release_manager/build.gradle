@@ -83,7 +83,7 @@ apply from: 'jetty.gradle'
 task "as"(dependsOn: assemble)
 task "c"(dependsOn: classes)
 
-def enableWeave = false
+def enableWeave = true
 
 task weave {
 
@@ -109,7 +109,7 @@ task weave {
 				showWeaveInfo:false,
 				inpath: "$compileKotlin.destinationDir",
 				destDir: "$compileKotlin.destinationDir",
-				classpath: "${configurations.compile.asPath};${configurations.ajc.asPath};../tiny/build/classes/kotlin/main;../tiny-annotation/build/classes/kotlin/main",
+				classpath: "${configurations.compile.asPath};${configurations.ajc.asPath}",
 				maxmem:"512m", 
 				fork:"true",
 				//aspectPath:"",
