@@ -9,31 +9,27 @@
     <div class="control-group">
         Select Project: <select name="siteId" id="selectedSite">
             <option value="0">Select Project Please</option>
-            <?
-            if(is_array($this->siteOptions) && count($this->siteOptions)>0){
-                foreach($this->siteOptions as $siteId => $siteName){
-            ?>
-                <option value="<?=$siteId?>" <?if($this->siteInfo['id'] == $siteId){?> selected <?}?>><?= $siteName?></option>
-            <?
-                }
-            }
-            ?>
+            <%
+            for(site in sites){
+            %>
+                <option value="<%=site.id%>" <%if(site.id == siteId){%> selected <%}%>><%=site.sitename%></option>
+            <%}%>
          </select>
-		 <? if($this->siteInfo) { ?>
+		 <% if(siteInfo) { %>
         <div class="btn-group pull-right">
             <a href="#~" class="btn btnTask" data-task="getCurrentBranch" >Checkout the Release Branch</a>
             <a href="#~" class="btn btnTask" data-task="update">Update</a>
             <a href="#~" class="btn btnTask" data-task="generate">Generate</a>
         </div>
-		<? } ?>
+		<%}%>
     </div>
-	<? if($this->siteInfo) { ?>
+	<% if(siteInfo) { %>
     <div class="control-group">
         Select Release Type：<select id="selectReleaseType">
-            <option value="exclude" <?php if($this->releaseType == 'exclude' || empty($this->releaseType)):?>selected<?php endif;?>>
+            <option value="exclude" <%= if(releaseType == 'exclude' || releaseType == '') "selected" else ""%>>
                 Exclude List
             </option>
-            <option value="include" <?php if($this->releaseType == 'include'):?>selected<?php endif;?>>
+            <option value="include" <%= if(releaseType == 'include') "selected" else ""%>>
                 Include List
             </option>
         </select>
@@ -41,21 +37,21 @@
     <div class="releaseOpt">
         <div class="control-group keywords_div">
             <label>
-            <?php if($this->releaseType == 'include'):?>
+            <% if(releaseType == 'include'){%>
                 Include Key words:
-            <?php else:?>
+            <%}else{%>
                 Filter Key words:
-            <?php endif;?>
+            <%}%>
             </label>
-            <textarea rows="6" id="keyWords"><?=$this->keyWords?></textarea> 
+            <textarea rows="6" id="keyWords"><%=keyWords%></textarea> 
          </div>
          <a href="#~" class="btn btn-large btn-primary" id="js_testRelease">Test Release</a>
          <a href="#~" class="btn btn-large btn-danger" id="js_release">Release</a>
     </div>
     <div class="well result">
-        <iframe id="js_result" <?=$this->frameLink?>></iframe>
+        <iframe id="js_result" <%=frameLink%>></iframe>
     </div>
-	<? } ?>
+	<%}%>
 </div>
 
 <div id="myModal" class="modal hide fade">

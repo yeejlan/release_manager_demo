@@ -28,7 +28,7 @@ jQuery(function(){
 	$('#selectedSite').change(function() {
 		var selectedSite = $(this).val();
 		if(selectedSite != ''){
-			location.href = "index.php?siteId=" + selectedSite;
+			location.href = "home?siteId=" + selectedSite;
 		}
 	});
 
@@ -46,7 +46,7 @@ jQuery(function(){
 		var task = $(this).attr('data-task');
 		var rollbackNumber = $.trim($('#rollBackNum').val());
 		var siteId = $('#selectedSite').val();
-		var url = '/index/returnmessage/?siteId='+ siteId +'&task=' + task;
+		var url = '/home/runCommand?siteId='+ siteId +'&task=' + task;
 		
 		switch(task) {
 			case 'rollback':

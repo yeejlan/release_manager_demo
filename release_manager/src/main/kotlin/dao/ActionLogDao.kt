@@ -66,6 +66,7 @@ object ActionLogDao {
 
 		val p: HashMap<String, Any> = hashMapOf()
 		if(dateFilter != null) {
+			val sdf = SimpleDateFormat("yyyy-MM-dd")
 			p["log_date"] = sdf.format(dateFilter)
 		}
 		if(nameFilter != null) {
