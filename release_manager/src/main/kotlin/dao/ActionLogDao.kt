@@ -8,9 +8,9 @@ import release_manager.library.Utils
 import java.text.SimpleDateFormat
 
 private val db = TinyRegistry["db.release_manager"] as TinyJdbc
-private val sdf = SimpleDateFormat("yyyy-MM-dd")
 
-class ActionLogDao {
+/*for demo, can use single instance(object) for thread-safe classes */
+object ActionLogDao {
 
 	fun add(userid: Long, username: String, action_name: String, return_message: String): TinyResult<Long> {
 
@@ -44,6 +44,7 @@ class ActionLogDao {
 				"pageSize" to pageSize
 			)
 		if(dateFilter != null) {
+			val sdf = SimpleDateFormat("yyyy-MM-dd")
 			p["log_date"] = sdf.format(dateFilter)
 		}
 		if(nameFilter != null) {

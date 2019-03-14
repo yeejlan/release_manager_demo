@@ -6,8 +6,6 @@ import release_manager.model.*
 import tiny.*
 import tiny.lib.*
 
-
-private val logModel = LogModel()
 private val userModel = UserModel()
 
 @Controller
@@ -18,7 +16,7 @@ class TestController : BaseController() {
 	}
 
 	fun aAction(): Any {
-		val result = logModel.list(null,null)
+		val result = LogModel.list(null,null)
 		if(result.error()){
 			println("err: " + result.cause)
 		}else{
@@ -27,7 +25,7 @@ class TestController : BaseController() {
 			val oneLog = result.data()[0]
 			DebugUtil.inspect(oneLog.map)
 		}
-		val result2 = logModel.getTotalCount(null,null)
+		val result2 = LogModel.getTotalCount(null,null)
 		println(result2.data())
 		return result.toString() + " | " + result2.data().toString()
 	}

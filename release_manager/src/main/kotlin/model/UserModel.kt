@@ -7,7 +7,6 @@ import release_manager.library.Utils
 
 private val sitePhrase = TinyApp.getConfig()["site.phrase"]
 private val userDao = UserDao()
-private val logModel = LogModel()
 
 class UserModel {
 
@@ -76,12 +75,12 @@ class UserModel {
 			session["username"] = user.username
 			session["role"] = user.role
 
-			logModel.add(user.id, user.username, "login", "Success")
+			LogModel.add(user.id, user.username, "login", "Success")
 
 			return TinyResult(null, true)
 		}
 
-		logModel.add(-1, user.username, "login", "Failed")
+		LogModel.add(-1, user.username, "login", "Failed")
 
 		return TinyResult(null, false)
 	}

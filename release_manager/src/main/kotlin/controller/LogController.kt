@@ -13,7 +13,6 @@ import java.text.SimpleDateFormat
 import io.reactivex.functions.BiFunction
 
 private val userModel = UserModel()
-private val logModel = LogModel()
 
 @Controller
 class LogController : BaseController() {
@@ -57,11 +56,11 @@ class LogController : BaseController() {
 		}
 
 		val logListSingle = Single.fromCallable(Callable<TinyResult<List<ActionLog>>> {
-				logModel.list(dateFilter, nameFilter, offset, pageSize)
+				LogModel.list(dateFilter, nameFilter, offset, pageSize)
 			}).subscribeOn(Schedulers.io())
 
 		val logTotalSingle = Single.fromCallable(Callable<TinyResult<Long>> {
-				logModel.getTotalCount(dateFilter, nameFilter)
+				LogModel.getTotalCount(dateFilter, nameFilter)
 			}).subscribeOn(Schedulers.io())
 
 		val mergeResult = BiFunction<TinyResult<List<ActionLog>>, TinyResult<Long>, Map<String, Any>> {
