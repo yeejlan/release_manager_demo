@@ -8,6 +8,8 @@ import javax.servlet.annotation.WebListener
 import org.eclipse.jetty.server.Server
 import org.eclipse.jetty.servlet.ServletContextHandler
 import org.eclipse.jetty.webapp.WebAppContext
+import org.eclipse.jetty.server.ServerConnector
+import org.eclipse.jetty.util.thread.QueuedThreadPool
 
 @TinyApplication
 class ReleaseManager : TinyBootstrap {
@@ -38,8 +40,15 @@ fun main(args: Array<String>) {
 
 fun runJettyWithFatJar(){
 	val port = System.getProperty("tiny.app.port")?.toIntOrNull() ?: 8080
-	val server = Server(port)
+	val maxthreads = System.getProperty("tiny.app.maxthreads")?.toIntOrNull() ?: 200
+	val minthreads = System.getProperty("tiny.app.minthreads")?.toIntOrNull() ?: 10
+
+	val threadPool = QueuedThreadPool(maxthreads, minthreads)
+	val server = Server(threadPool)
 	server.setStopAtShutdown(true)
+	val http = ServerConnector(server)
+	http.setPort(port)
+	server.addConnector(http)
 
 	val context = WebAppContext()
 	context.setContextPath("/")
