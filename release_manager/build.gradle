@@ -83,7 +83,7 @@ apply from: 'jetty.gradle'
 task "as"(dependsOn: assemble)
 task "c"(dependsOn: classes)
 
-def enableWeave = true
+def enableWeave = false
 
 task weave {
 
