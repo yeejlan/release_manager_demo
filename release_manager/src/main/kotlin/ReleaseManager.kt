@@ -23,10 +23,12 @@ fun main(args: Array<String>) {
 	app.bootstrap()
 
 	try{
-		test()
+		//test()
 
 		if(!app.script.isEmpty()){
 			TinyScript.run(app.env, app.name, app.script)
+		}else{
+			TinyApp.runJetty()
 		}
 	}finally{
 		TinyApp.shutdown()
