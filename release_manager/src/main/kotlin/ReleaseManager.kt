@@ -40,8 +40,8 @@ fun main(args: Array<String>) {
 
 fun runJettyWithFatJar(){
 	val port = System.getProperty("tiny.app.port")?.toIntOrNull() ?: 8080
-	val maxthreads = System.getProperty("tiny.app.maxthreads")?.toIntOrNull() ?: 200
-	val minthreads = System.getProperty("tiny.app.minthreads")?.toIntOrNull() ?: 10
+	val maxthreads = System.getProperty("tiny.app.maxthreads")?.toIntOrNull() ?: 500
+	val minthreads = System.getProperty("tiny.app.minthreads")?.toIntOrNull() ?: 20
 
 	val threadPool = QueuedThreadPool(maxthreads, minthreads)
 	val nThreads = Runtime.getRuntime().availableProcessors()
