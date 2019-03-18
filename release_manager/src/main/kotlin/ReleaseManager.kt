@@ -44,9 +44,10 @@ fun runJettyWithFatJar(){
 	val minthreads = System.getProperty("tiny.app.minthreads")?.toIntOrNull() ?: 10
 
 	val threadPool = QueuedThreadPool(maxthreads, minthreads)
+	val nThreads = Runtime.getRuntime().availableProcessors()
 	val server = Server(threadPool)
 	server.setStopAtShutdown(true)
-	val http = ServerConnector(server)
+	val http = ServerConnector(server, nThreads, nThreads)
 	http.setPort(port)
 	server.addConnector(http)
 
