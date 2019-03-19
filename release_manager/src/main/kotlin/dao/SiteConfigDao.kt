@@ -5,7 +5,7 @@ import tiny.lib.*
 import release_manager.domain.*
 import release_manager.library.Utils
 
-private val db = TinyRegistry["db.release_manager"] as TinyJdbc
+private val db: TinyJdbc = TinyRegistry["db.release_manager"]
 
 class SiteConfigDao {
 

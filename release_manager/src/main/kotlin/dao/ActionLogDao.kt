@@ -7,7 +7,7 @@ import java.util.Date
 import release_manager.library.Utils
 import java.text.SimpleDateFormat
 
-private val db = TinyRegistry["db.release_manager"] as TinyJdbc
+private val db: TinyJdbc = TinyRegistry["db.release_manager"]
 
 /*for demo, can use single instance(object) for thread-safe classes */
 object ActionLogDao {

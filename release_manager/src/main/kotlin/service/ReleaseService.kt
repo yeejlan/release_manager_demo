@@ -95,9 +95,11 @@ class ReleaseService {
 		
 		//log
 		val session = TinyRouter.ctx().session
+		val uid: Long = session["uid"] ?: 0
+		val username: String = session["username"] ?: ""
 		LogModel.add(
-			session["uid"] as Long, 
-			session["username"] as String,
+			uid, 
+			username,
 			command,
 			_runResult.toString()
 		)

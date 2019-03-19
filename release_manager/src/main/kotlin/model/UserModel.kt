@@ -11,13 +11,13 @@ private val userDao = UserDao()
 class UserModel {
 
 	fun currentUserId(): Long {
-		val userid = TinyRouter.ctx().session["uid"] ?: 0L
-		return userid as Long
+		val userid: Long = TinyRouter.ctx().session["uid"] ?: 0L
+		return userid
 	}
 
 	fun currentRole(): String {
-		val role = TinyRouter.ctx().session["role"] ?: ""
-		return role as String
+		val role: String = TinyRouter.ctx().session["role"] ?: ""
+		return role
 	}
 
 	fun currentUserInfo(): TinyResult<User?> {
@@ -88,8 +88,8 @@ class UserModel {
 	/*only for demo purpose, should be verifyPassword(userid: Long, password: String)*/
 	fun verifyPassword(password: String): TinyResult<Boolean> {
 		val session = TinyRouter.ctx().session
-		val userid = session["uid"] as Long
-		val username = session["username"] as String
+		val userid: Long = session["uid"] ?: 0 
+		val username: String = session["username"] ?: "" 
 		if(userid < 1 || username == "" || password == "") {
 			return TinyResult(null, false)
 		}
@@ -112,7 +112,7 @@ class UserModel {
 	/*only for demo purpose, should be changePassword(userid: Long, password: String)*/
 	fun changePassword(password: String): TinyResult<Boolean> {
 		val session = TinyRouter.ctx().session
-		val userid = session["uid"] as Long
+		val userid: Long = session["uid"] ?: 0 
 		
 		if(userid < 1 || password == "") {
 			return TinyResult("bad param", false)

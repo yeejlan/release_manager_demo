@@ -4,7 +4,7 @@ import tiny.*
 import tiny.lib.*
 import release_manager.domain.*
 
-private val db = TinyRegistry["db.release_manager"] as TinyJdbc
+private val db: TinyJdbc = TinyRegistry["db.release_manager"] 
 
 class UserDao {
 
