@@ -30,7 +30,7 @@ class SwingJettyControl(title: String) : JFrame() {
 			val location = getLocation()
 			preferences.putInt("x", location.x)
 			preferences.putInt("y", location.y)
-			System.exit(1)
+			System.exit(3210)
 		}
 
 		val gl = GroupLayout(contentPane)
