@@ -1,4 +1,4 @@
-include ':release_manager', ':tiny', ':tiny-compiler', ':tiny-annotation'
+include ':doc_generator',':release_manager', ':tiny', ':tiny-compiler', ':tiny-annotation'
 
 def tinyHome = System.getenv("TINY_HOME")
 if(tinyHome!=null && !tinyHome.isEmpty()){

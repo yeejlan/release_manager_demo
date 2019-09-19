@@ -5,10 +5,12 @@ import release_manager.model.*
 import release_manager.service.*
 import release_manager.domain.*
 import tiny.*
+import doc_generator.*
 
 private val userModel = UserModel()
 private val siteConfigModel = SiteConfigModel()
 
+@DocScan
 @Controller
 class HomeController : BaseController() {
 
@@ -28,6 +30,13 @@ class HomeController : BaseController() {
 		}
 	}
 
+	@Desc("the release page")
+	@Param([
+		"task, string, selected task",
+		"releaseType, string, testing or release",
+		"keyWords, string, filter keywords, true"
+	])
+	@Return("the release template")
 	fun indexAction(): Any {
 		val task = ctx.params["task"]
 		val releaseType = ctx.params["releaseType"]
@@ -52,5 +61,9 @@ class HomeController : BaseController() {
 		val writer = ctx.response.getWriter()
 		releasService.runCommand(writer, siteId, command)
 		return
+	}
+
+	fun docAction(): String {
+		return DocProvider.JsonString()
 	}
 }

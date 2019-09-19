@@ -26,6 +26,8 @@ dependencies {
 	compile project(":tiny-annotation")
 	compile project(":tiny-compiler")
 	kapt project(":tiny-compiler")
+	compile project(":doc_generator")
+	kapt project(":doc_generator")
 	compile project(":tiny")
 	compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	compile("org.jetbrains.kotlin:kotlin-reflect")
